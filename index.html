@@ -16,193 +16,176 @@
     aspect-ratio: 1672 / 941;
     margin: 0 auto;
     overflow: hidden;
-    isolation: isolate;
     background: #f8f0dc;
   }
 
-  .hero__base,
-  .hero__cover {
-    position: absolute;
-    inset: 0;
+  canvas {
+    display: block;
     width: 100%;
     height: 100%;
-    display: block;
-    user-select: none;
-    pointer-events: none;
-  }
-
-  .hero__base { z-index: 0; }
-  .hero__cover { z-index: 1; }
-
-  .part {
-    position: absolute;
-    z-index: 2;
-    pointer-events: none;
-    will-change: transform;
-    backface-visibility: hidden;
-    transform: translate3d(var(--px, 0px), var(--py, 0px), 0);
-  }
-
-  .part > img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: contain;
-    will-change: transform, opacity;
-    backface-visibility: hidden;
-    transform-origin: 50% 50%;
-  }
-
-  #part-sun {
-  left: 10.52631579%;
-  top: 10.52072264%;
-  width: 7.29665072%;
-  height: 12.43358130%;
-} #part-cloud_top {
-  left: 22.18899522%;
-  top: 5.52603613%;
-  width: 8.85167464%;
-  height: 8.18278427%;
-} #part-cloud_left {
-  left: 2.27272727%;
-  top: 19.65993624%;
-  width: 7.65550239%;
-  height: 6.26992561%;
-} #part-cloud_right {
-  left: 75.11961722%;
-  top: 13.70882040%;
-  width: 7.17703349%;
-  height: 6.37619554%;
-} #part-cloud_far_right {
-  left: 91.02870813%;
-  top: 22.31668438%;
-  width: 7.59569378%;
-  height: 6.48246546%;
-} #part-bird {
-  left: 79.00717703%;
-  top: 24.54835282%;
-  width: 3.82775120%;
-  height: 4.78214665%;
-} #part-steam {
-  left: 12.14114833%;
-  top: 30.60573858%;
-  width: 1.01674641%;
-  height: 1.16896918%;
-}
-
-  #part-sun > img {
-    animation: sunFloat 5.8s ease-in-out infinite;
-  }
-  #part-cloud_top > img {
-    animation: cloudFloatA 7.2s ease-in-out -1.2s infinite;
-  }
-  #part-cloud_left > img {
-    animation: cloudFloatB 7.9s ease-in-out -3.8s infinite;
-  }
-  #part-cloud_right > img {
-    animation: cloudFloatA 7.5s ease-in-out -2.4s infinite;
-  }
-  #part-cloud_far_right > img {
-    animation: cloudFloatB 8.3s ease-in-out -4.6s infinite;
-  }
-  #part-bird > img {
-    animation: birdFloat 4.3s ease-in-out -1.0s infinite;
-  }
-  #part-steam > img {
-    transform-origin: 50% 100%;
-    animation: steamRise 2.3s ease-in-out infinite;
-  }
-
-  @keyframes sunFloat {
-    0%, 100% { transform: translate3d(0, 0, 0) rotate(-0.6deg); }
-    50% { transform: translate3d(3.5%, -9%, 0) rotate(0.9deg); }
-  }
-  @keyframes cloudFloatA {
-    0%, 100% { transform: translate3d(-2.4%, 0.4%, 0); }
-    50% { transform: translate3d(2.4%, -8.8%, 0); }
-  }
-  @keyframes cloudFloatB {
-    0%, 100% { transform: translate3d(1.9%, -1.4%, 0); }
-    50% { transform: translate3d(-1.9%, 8.2%, 0); }
-  }
-  @keyframes birdFloat {
-    0%, 100% { transform: translate3d(-1.6%, 2.6%, 0) rotate(-0.8deg); }
-    50% { transform: translate3d(3.6%, -10.5%, 0) rotate(1.2deg); }
-  }
-  @keyframes steamRise {
-    0% { transform: translate3d(0, 7%, 0) scaleY(0.96); opacity: 0.74; }
-    45% { transform: translate3d(10%, -24%, 0) scaleY(1.08); opacity: 1; }
-    100% { transform: translate3d(-8%, -52%, 0) scaleY(1.18); opacity: 0.12; }
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .part > img { animation: none !important; }
-    .part { transform: none !important; }
+    canvas { animation: none !important; }
   }
 </style>
 </head>
 <body>
 <main class="hero" id="hero" aria-label="H view">
-  <img class="hero__base" src="assets/hero-original.png" alt="">
-  <img class="hero__cover" src="assets/cover-patches.png" alt="">
-
-  <div class="part" id="part-sun" data-depth="0.20"><img src="assets/sun.png" alt=""></div>
-  <div class="part" id="part-cloud_top" data-depth="0.13"><img src="assets/cloud_top.png" alt=""></div>
-  <div class="part" id="part-cloud_left" data-depth="0.10"><img src="assets/cloud_left.png" alt=""></div>
-  <div class="part" id="part-cloud_right" data-depth="0.12"><img src="assets/cloud_right.png" alt=""></div>
-  <div class="part" id="part-cloud_far_right" data-depth="0.09"><img src="assets/cloud_far_right.png" alt=""></div>
-  <div class="part" id="part-bird" data-depth="0.24"><img src="assets/bird.png" alt=""></div>
-  <div class="part" id="part-steam" data-depth="0.08"><img src="assets/steam.png" alt=""></div>
+  <canvas id="c"></canvas>
 </main>
 
 <script>
 (() => {
-  const hero = document.getElementById('hero');
-  const parts = [...hero.querySelectorAll('.part')];
-  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const W = 1672, H = 941;
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  canvas.width  = W;
+  canvas.height = H;
 
-  let targetX = 0;
-  let targetY = 0;
-  let currentX = 0;
-  let currentY = 0;
-  let raf = 0;
+  // パーツ定義（元HTMLと同じ座標・サイズ）
+  const PARTS = [
+    { id: 'sun',          src: 'assets/sun.png',           x: 0.1052631579, y: 0.1052072264, w: 0.0729665072, h: 0.1243358130, depth: 0.20 },
+    { id: 'cloud_top',    src: 'assets/cloud_top.png',     x: 0.2218899522, y: 0.0552603613, w: 0.0885167464, h: 0.0818278427, depth: 0.13 },
+    { id: 'cloud_left',   src: 'assets/cloud_left.png',    x: 0.0227272727, y: 0.1965993624, w: 0.0765550239, h: 0.0626992561, depth: 0.10 },
+    { id: 'cloud_right',  src: 'assets/cloud_right.png',   x: 0.7511961722, y: 0.1370882040, w: 0.0717703349, h: 0.0637619554, depth: 0.12 },
+    { id: 'cloud_far_right', src: 'assets/cloud_far_right.png', x: 0.9102870813, y: 0.2231668438, w: 0.0759569378, h: 0.0648246546, depth: 0.09 },
+    { id: 'bird',         src: 'assets/bird.png',           x: 0.7900717703, y: 0.2454835282, w: 0.0382775120, h: 0.0478214665, depth: 0.24 },
+    { id: 'steam',        src: 'assets/steam.png',          x: 0.1214114833, y: 0.3060573858, w: 0.0101674641, h: 0.0116896918, depth: 0.08 },
+  ];
 
-  function render() {
-    currentX += (targetX - currentX) * 0.08;
-    currentY += (targetY - currentY) * 0.08;
-
-    parts.forEach((part) => {
-      const depth = Number(part.dataset.depth || 0);
-      part.style.setProperty('--px', `${(currentX * depth).toFixed(2)}px`);
-      part.style.setProperty('--py', `${(currentY * depth).toFixed(2)}px`);
+  // 画像読み込み
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload  = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
     });
+  }
 
-    if (Math.abs(targetX - currentX) > 0.02 || Math.abs(targetY - currentY) > 0.02) {
-      raf = requestAnimationFrame(render);
-    } else {
-      raf = 0;
+  let base, cover, parts = [];
+  let t = 0;
+  let mouseX = 0, mouseY = 0, curX = 0, curY = 0;
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // アニメーション計算
+  function getOffset(id, t) {
+    if (reduceMotion) return { x: 0, y: 0, sx: 1, sy: 1, op: 1, rot: 0 };
+    switch(id) {
+      case 'sun': {
+        const s = Math.sin(t / 5.8 * Math.PI * 2);
+        return { x: s * 0.035 * W, y: -Math.abs(s) * 0.09 * H, rot: s * 0.015 };
+      }
+      case 'cloud_top': {
+        const s = Math.sin((t / 7.2 - 1.2/7.2) * Math.PI * 2);
+        return { x: s * 0.024 * W, y: s * -0.088 * H * 0.5 };
+      }
+      case 'cloud_left': {
+        const s = Math.sin((t / 7.9 - 3.8/7.9) * Math.PI * 2);
+        return { x: s * -0.019 * W, y: s * 0.082 * H * 0.5 };
+      }
+      case 'cloud_right': {
+        const s = Math.sin((t / 7.5 - 2.4/7.5) * Math.PI * 2);
+        return { x: s * 0.024 * W, y: s * -0.088 * H * 0.5 };
+      }
+      case 'cloud_far_right': {
+        const s = Math.sin((t / 8.3 - 4.6/8.3) * Math.PI * 2);
+        return { x: s * -0.019 * W, y: s * 0.082 * H * 0.5 };
+      }
+      case 'bird': {
+        const s = Math.sin((t / 4.3 - 1.0/4.3) * Math.PI * 2);
+        return { x: s * 0.036 * W, y: s * -0.105 * H, rot: s * 0.02 };
+      }
+      case 'steam': {
+        const p = (t % 2.3) / 2.3;
+        const op = p < 0.45 ? p/0.45 : p < 0.9 ? 1-(p-0.45)/0.45 : 0.12;
+        const tx = p < 0.45 ? p/0.45 * 0.10 * W * 0.01 : (0.10 - (p-0.45)/0.45 * 0.18) * W * 0.01;
+        const ty = -p * 0.52 * H * 0.01;
+        return { x: tx, y: ty, op: Math.max(0.1, op) };
+      }
+      default: return { x:0, y:0 };
     }
   }
 
-  function queueRender() {
-    if (!raf) raf = requestAnimationFrame(render);
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // 背景
+    ctx.drawImage(base, 0, 0, W, H);
+
+    // パーツ（cover patchより前）
+    for (const p of parts) {
+      if (p.id === 'steam') continue; // steamは最後
+      const off = getOffset(p.id, t);
+      const px = (p.x * W + off.x + curX * p.depth);
+      const py = (p.y * H + off.y + curY * p.depth);
+      const pw = p.w * W;
+      const ph = p.h * H;
+      ctx.save();
+      if (off.rot) {
+        ctx.translate(px + pw/2, py + ph/2);
+        ctx.rotate(off.rot);
+        ctx.drawImage(p.img, -pw/2, -ph/2, pw, ph);
+      } else {
+        ctx.globalAlpha = off.op ?? 1;
+        ctx.drawImage(p.img, px, py, pw, ph);
+      }
+      ctx.restore();
+    }
+
+    // cover patch（パーツの元位置を隠す）
+    ctx.drawImage(cover, 0, 0, W, H);
+
+    // steam（最前面）
+    const steam = parts.find(p => p.id === 'steam');
+    if (steam) {
+      const off = getOffset('steam', t);
+      ctx.save();
+      ctx.globalAlpha = off.op ?? 1;
+      ctx.drawImage(steam.img,
+        steam.x * W + off.x + curX * steam.depth,
+        steam.y * H + off.y + curY * steam.depth,
+        steam.w * W, steam.h * H
+      );
+      ctx.restore();
+    }
   }
 
-  hero.addEventListener('pointermove', (event) => {
-    if (reduceMotion.matches) return;
-    const rect = hero.getBoundingClientRect();
-    const nx = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
-    const ny = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
-    targetX = nx * 9;
-    targetY = ny * 6.5;
-    queueRender();
-  }, { passive: true });
+  let lastTime = 0;
+  function loop(ts) {
+    const dt = (ts - lastTime) / 1000;
+    lastTime = ts;
+    t += dt;
+    curX += (mouseX - curX) * 0.08;
+    curY += (mouseY - curY) * 0.08;
+    draw();
+    requestAnimationFrame(loop);
+  }
 
-  hero.addEventListener('pointerleave', () => {
-    targetX = 0;
-    targetY = 0;
-    queueRender();
+  // マウスパララックス
+  const heroEl = document.getElementById('hero');
+  heroEl.addEventListener('pointermove', e => {
+    if (reduceMotion) return;
+    const r = heroEl.getBoundingClientRect();
+    mouseX = ((e.clientX - r.left) / r.width  - 0.5) * 2 * 9;
+    mouseY = ((e.clientY - r.top)  / r.height - 0.5) * 2 * 6.5;
   }, { passive: true });
+  heroEl.addEventListener('pointerleave', () => { mouseX = 0; mouseY = 0; }, { passive: true });
+
+  // 全画像ロード後にスタート
+  Promise.all([
+    loadImage('assets/hero-original.png'),
+    loadImage('assets/cover-patches.png'),
+    ...PARTS.map(p => loadImage(p.src).then(img => { p.img = img; return p; }))
+  ]).then(([b, c, ...ps]) => {
+    base  = b;
+    cover = c;
+    parts = ps;
+    requestAnimationFrame(loop);
+  });
 })();
 </script>
 </body>
