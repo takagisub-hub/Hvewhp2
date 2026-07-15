@@ -91,48 +91,48 @@
 }
 
   #part-sun > img {
-    animation: sunFloat 6.8s ease-in-out infinite;
+    animation: sunFloat 5.8s ease-in-out infinite;
   }
   #part-cloud_top > img {
-    animation: cloudFloatA 8.2s ease-in-out -1.7s infinite;
+    animation: cloudFloatA 7.2s ease-in-out -1.2s infinite;
   }
   #part-cloud_left > img {
-    animation: cloudFloatB 9.1s ease-in-out -4.4s infinite;
+    animation: cloudFloatB 7.9s ease-in-out -3.8s infinite;
   }
   #part-cloud_right > img {
-    animation: cloudFloatA 8.7s ease-in-out -2.8s infinite;
+    animation: cloudFloatA 7.5s ease-in-out -2.4s infinite;
   }
   #part-cloud_far_right > img {
-    animation: cloudFloatB 9.5s ease-in-out -5.1s infinite;
+    animation: cloudFloatB 8.3s ease-in-out -4.6s infinite;
   }
   #part-bird > img {
-    animation: birdFloat 5.2s ease-in-out -1.4s infinite;
+    animation: birdFloat 4.3s ease-in-out -1.0s infinite;
   }
   #part-steam > img {
     transform-origin: 50% 100%;
-    animation: steamRise 2.8s ease-in-out infinite;
+    animation: steamRise 2.3s ease-in-out infinite;
   }
 
   @keyframes sunFloat {
-    0%, 100% { transform: translate3d(0, 0, 0) rotate(-0.4deg); }
-    50% { transform: translate3d(2%, -5%, 0) rotate(0.5deg); }
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(-0.6deg); }
+    50% { transform: translate3d(3.5%, -9%, 0) rotate(0.9deg); }
   }
   @keyframes cloudFloatA {
-    0%, 100% { transform: translate3d(-1.5%, 0, 0); }
-    50% { transform: translate3d(1.5%, -5.5%, 0); }
+    0%, 100% { transform: translate3d(-2.4%, 0.4%, 0); }
+    50% { transform: translate3d(2.4%, -8.8%, 0); }
   }
   @keyframes cloudFloatB {
-    0%, 100% { transform: translate3d(1.2%, -1%, 0); }
-    50% { transform: translate3d(-1.2%, 5%, 0); }
+    0%, 100% { transform: translate3d(1.9%, -1.4%, 0); }
+    50% { transform: translate3d(-1.9%, 8.2%, 0); }
   }
   @keyframes birdFloat {
-    0%, 100% { transform: translate3d(-1%, 2%, 0) rotate(-0.5deg); }
-    50% { transform: translate3d(2%, -7%, 0) rotate(0.7deg); }
+    0%, 100% { transform: translate3d(-1.6%, 2.6%, 0) rotate(-0.8deg); }
+    50% { transform: translate3d(3.6%, -10.5%, 0) rotate(1.2deg); }
   }
   @keyframes steamRise {
-    0% { transform: translate3d(0, 4%, 0) scaleY(0.98); opacity: 0.78; }
-    48% { transform: translate3d(7%, -18%, 0) scaleY(1.06); opacity: 1; }
-    100% { transform: translate3d(-5%, -36%, 0) scaleY(1.12); opacity: 0.2; }
+    0% { transform: translate3d(0, 7%, 0) scaleY(0.96); opacity: 0.74; }
+    45% { transform: translate3d(10%, -24%, 0) scaleY(1.08); opacity: 1; }
+    100% { transform: translate3d(-8%, -52%, 0) scaleY(1.18); opacity: 0.12; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -193,8 +193,8 @@
     const rect = hero.getBoundingClientRect();
     const nx = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
     const ny = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
-    targetX = nx * 7;
-    targetY = ny * 5;
+    targetX = nx * 9;
+    targetY = ny * 6.5;
     queueRender();
   }, { passive: true });
 
