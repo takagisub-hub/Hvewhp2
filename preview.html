@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>H view Hero Animation</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: #f8f0dc; }
+  body { overflow-x: hidden; }
+
+  .hero {
+    position: relative;
+    width: 100%;
+    max-width: 1672px;
+    aspect-ratio: 1672 / 941;
+    margin: 0 auto;
+    overflow: hidden;
+    isolation: isolate;
+    background: #f8f0dc;
+  }
+
+  .hero__base,
+  .hero__cover {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .hero__base { z-index: 0; }
+  .hero__cover { z-index: 1; }
+
+  .part {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translate3d(var(--px, 0px), var(--py, 0px), 0);
+  }
+
+  .part > img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    transform-origin: 50% 50%;
+  }
+
+  #part-sun {
+  left: 10.52631579%;
+  top: 10.52072264%;
+  width: 7.29665072%;
+  height: 12.43358130%;
+} #part-cloud_top {
+  left: 22.18899522%;
+  top: 5.52603613%;
+  width: 8.85167464%;
+  height: 8.18278427%;
+} #part-cloud_left {
+  left: 2.27272727%;
+  top: 19.65993624%;
+  width: 7.65550239%;
+  height: 6.26992561%;
+} #part-cloud_right {
+  left: 75.11961722%;
+  top: 13.70882040%;
+  width: 7.17703349%;
+  height: 6.37619554%;
+} #part-cloud_far_right {
+  left: 91.02870813%;
+  top: 22.31668438%;
+  width: 7.59569378%;
+  height: 6.48246546%;
+} #part-bird {
+  left: 79.00717703%;
+  top: 24.54835282%;
+  width: 3.82775120%;
+  height: 4.78214665%;
+} #part-steam {
+  left: 12.14114833%;
+  top: 30.60573858%;
+  width: 1.01674641%;
+  height: 1.16896918%;
+}
+
+  #part-sun > img {
+    animation: sunFloat 6.8s ease-in-out infinite;
+  }
+  #part-cloud_top > img {
+    animation: cloudFloatA 8.2s ease-in-out -1.7s infinite;
+  }
+  #part-cloud_left > img {
+    animation: cloudFloatB 9.1s ease-in-out -4.4s infinite;
+  }
+  #part-cloud_right > img {
+    animation: cloudFloatA 8.7s ease-in-out -2.8s infinite;
+  }
+  #part-cloud_far_right > img {
+    animation: cloudFloatB 9.5s ease-in-out -5.1s infinite;
+  }
+  #part-bird > img {
+    animation: birdFloat 5.2s ease-in-out -1.4s infinite;
+  }
+  #part-steam > img {
+    transform-origin: 50% 100%;
+    animation: steamRise 2.8s ease-in-out infinite;
+  }
+
+  @keyframes sunFloat {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(-0.4deg); }
+    50% { transform: translate3d(2%, -5%, 0) rotate(0.5deg); }
+  }
+  @keyframes cloudFloatA {
+    0%, 100% { transform: translate3d(-1.5%, 0, 0); }
+    50% { transform: translate3d(1.5%, -5.5%, 0); }
+  }
+  @keyframes cloudFloatB {
+    0%, 100% { transform: translate3d(1.2%, -1%, 0); }
+    50% { transform: translate3d(-1.2%, 5%, 0); }
+  }
+  @keyframes birdFloat {
+    0%, 100% { transform: translate3d(-1%, 2%, 0) rotate(-0.5deg); }
+    50% { transform: translate3d(2%, -7%, 0) rotate(0.7deg); }
+  }
+  @keyframes steamRise {
+    0% { transform: translate3d(0, 4%, 0) scaleY(0.98); opacity: 0.78; }
+    48% { transform: translate3d(7%, -18%, 0) scaleY(1.06); opacity: 1; }
+    100% { transform: translate3d(-5%, -36%, 0) scaleY(1.12); opacity: 0.2; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .part > img { animation: none !important; }
+    .part { transform: none !important; }
+  }
+</style>
+</head>
+<body>
+<main class="hero" id="hero" aria-label="H view">
+  <img class="hero__base" src="assets/hero-original.png" alt="">
+  <img class="hero__cover" src="assets/cover-patches.png" alt="">
+
+  <div class="part" id="part-sun" data-depth="0.20"><img src="assets/sun.png" alt=""></div>
+  <div class="part" id="part-cloud_top" data-depth="0.13"><img src="assets/cloud_top.png" alt=""></div>
+  <div class="part" id="part-cloud_left" data-depth="0.10"><img src="assets/cloud_left.png" alt=""></div>
+  <div class="part" id="part-cloud_right" data-depth="0.12"><img src="assets/cloud_right.png" alt=""></div>
+  <div class="part" id="part-cloud_far_right" data-depth="0.09"><img src="assets/cloud_far_right.png" alt=""></div>
+  <div class="part" id="part-bird" data-depth="0.24"><img src="assets/bird.png" alt=""></div>
+  <div class="part" id="part-steam" data-depth="0.08"><img src="assets/steam.png" alt=""></div>
+</main>
+
+<script>
+(() => {
+  const hero = document.getElementById('hero');
+  const parts = [...hero.querySelectorAll('.part')];
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+  let targetX = 0;
+  let targetY = 0;
+  let currentX = 0;
+  let currentY = 0;
+  let raf = 0;
+
+  function render() {
+    currentX += (targetX - currentX) * 0.08;
+    currentY += (targetY - currentY) * 0.08;
+
+    parts.forEach((part) => {
+      const depth = Number(part.dataset.depth || 0);
+      part.style.setProperty('--px', `${(currentX * depth).toFixed(2)}px`);
+      part.style.setProperty('--py', `${(currentY * depth).toFixed(2)}px`);
+    });
+
+    if (Math.abs(targetX - currentX) > 0.02 || Math.abs(targetY - currentY) > 0.02) {
+      raf = requestAnimationFrame(render);
+    } else {
+      raf = 0;
+    }
+  }
+
+  function queueRender() {
+    if (!raf) raf = requestAnimationFrame(render);
+  }
+
+  hero.addEventListener('pointermove', (event) => {
+    if (reduceMotion.matches) return;
+    const rect = hero.getBoundingClientRect();
+    const nx = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+    const ny = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+    targetX = nx * 7;
+    targetY = ny * 5;
+    queueRender();
+  }, { passive: true });
+
+  hero.addEventListener('pointerleave', () => {
+    targetX = 0;
+    targetY = 0;
+    queueRender();
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
