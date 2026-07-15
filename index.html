@@ -113,43 +113,31 @@
   function draw() {
     ctx.clearRect(0, 0, W, H);
 
-    // 背景
+    // 1. 背景
     ctx.drawImage(base, 0, 0, W, H);
 
-    // パーツ（cover patchより前）
-    for (const p of parts) {
-      if (p.id === 'steam') continue; // steamは最後
+    // 2. cover patch（元位置を隠す）
+    ctx.drawImage(cover, 0, 0, W, H);
+
+    // 3. アニメーションパーツ（cover patchの上）
+    const ORDER = ['sun','cloud_top','cloud_left','cloud_right','cloud_far_right','bird','steam'];
+    for (const id of ORDER) {
+      const p = parts.find(p => p.id === id);
+      if (!p) continue;
       const off = getOffset(p.id, t);
-      const px = (p.x * W + off.x + curX * p.depth);
-      const py = (p.y * H + off.y + curY * p.depth);
+      const px = p.x * W + (off.x ?? 0) + curX * p.depth;
+      const py = p.y * H + (off.y ?? 0) + curY * p.depth;
       const pw = p.w * W;
       const ph = p.h * H;
       ctx.save();
+      ctx.globalAlpha = off.op ?? 1;
       if (off.rot) {
         ctx.translate(px + pw/2, py + ph/2);
         ctx.rotate(off.rot);
         ctx.drawImage(p.img, -pw/2, -ph/2, pw, ph);
       } else {
-        ctx.globalAlpha = off.op ?? 1;
         ctx.drawImage(p.img, px, py, pw, ph);
       }
-      ctx.restore();
-    }
-
-    // cover patch（パーツの元位置を隠す）
-    ctx.drawImage(cover, 0, 0, W, H);
-
-    // steam（最前面）
-    const steam = parts.find(p => p.id === 'steam');
-    if (steam) {
-      const off = getOffset('steam', t);
-      ctx.save();
-      ctx.globalAlpha = off.op ?? 1;
-      ctx.drawImage(steam.img,
-        steam.x * W + off.x + curX * steam.depth,
-        steam.y * H + off.y + curY * steam.depth,
-        steam.w * W, steam.h * H
-      );
       ctx.restore();
     }
   }
