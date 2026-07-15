@@ -33,3 +33,10 @@ Upload the folder contents as-is to Cloudflare Pages or GitHub Pages.
 The publish root is the folder containing `index.html`.
 
 No external JavaScript or CSS library is required.
+
+
+Updated version: movement strength increased for sun, four clouds, bird, coffee steam, and pointer parallax.
+
+
+## Edge-fix v2
+Moving PNGs were re-matted per object with stricter source-background rejection. Cloud and bird boundary RGB is taken from the actual dark/color outline rather than the cream source background. The object-shape cover patch was rebuilt separately with a fully opaque cover core and feathered exterior only.
